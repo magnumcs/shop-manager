@@ -1,27 +1,32 @@
 package com.portifolio.magnum.eventregisterapi.model;
 
 import com.portifolio.magnum.eventregisterapi.domain.TypeEventEnum;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 @Data
-@Entity
-public class Event {
+@Document(collection = "event")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Event extends ArrayList<Event> implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeStamp;
     @Enumerated(EnumType.STRING)
-    private TypeEventEnum typeEvent;
-    @ElementCollection
-    @CollectionTable(name="customData")
-    @MapKeyColumn(name="customData_id")
-    private HashMap<String, String> customData;
+    private TypeEventEnum event;
+    private Double revenue;
+    private Map<String, String> customData = new HashMap<>();
 
 
 }
