@@ -1,8 +1,12 @@
 package com.portifolio.magnum.eventregisterapi.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum TypeEventEnum {
 
+    @JsonProperty("comprou")
     COMPROU(0, "Comprou"),
+    @JsonProperty("comprou-produto")
     COMPROU_PRODUTO(1, "Comprou produto");
 
     private Integer id;

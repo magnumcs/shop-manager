@@ -1,5 +1,6 @@
 package com.portifolio.magnum.eventregisterapi.service.Imp;
 
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventWrapper;
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.Product;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,7 +31,11 @@ public class TimelineServiceImp implements TimelineService {
     }
 
     @Override
-    public List<TimeLine> collectEvents(List<Event> events) {
+    public List<TimeLine> collectEvents(List<EventWrapper> eventsRequest) {
+        List<Event> events = new ArrayList<>();
+
+        eventsRequest.forEach(e -> events.add(buildEventRequest(e)));
+
         Map<String,List<Event>> eventsByTransaction =  events.stream()
                 .collect(Collectors.groupingBy(e -> e.getCustomData().get(TRANSACTION_ID)));
 
@@ -40,12 +46,22 @@ public class TimelineServiceImp implements TimelineService {
         return timeLine;
     }
 
+    private Event buildEventRequest(EventWrapper eventWrapper) {
+        Map<String, String> dados = new HashMap<>();
+        eventWrapper.getCustomData().forEach(cd -> dados.put(cd.getKey(), cd.getValue()));
+        return Event.builder()
+                .event(eventWrapper.getEvent())
+                .timestamp(eventWrapper.getTimestamp())
+                .revenue(eventWrapper.getRevenue())
+                .customData(dados).build();
+    }
+
     private List<TimeLine> buildTimelineDetails(Map<String,List<Event>> eventsByTransaction) {
         List<TimeLine> timeLineList = new ArrayList<>();
         eventsByTransaction.entrySet().stream().forEach(map -> {
             TimeLine timeLine = new TimeLine();
             map.getValue().stream().forEach(list -> {
-                timeLine.setTimeStamp(list.getTimeStamp());
+                timeLine.setTimeStamp(list.getTimestamp());
                 timeLine.setTransactionId(list.getCustomData().get(TRANSACTION_ID));
                 if(list.getRevenue() != null)
                     timeLine.setRevenue(list.getRevenue());

@@ -1,6 +1,7 @@
 package com.portifolio.magnum.eventregisterapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventRequestWrapper;
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
 import com.portifolio.magnum.eventregisterapi.service.TimelineService;
@@ -26,9 +27,9 @@ public class TimelineController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<Map<String, List <Event>>> registerEvents(@RequestBody Map<String, List <Event>> events) {
-        //List<TimeLine> timeLine = timelineService.collectEvents(events);
-        return ResponseEntity.ok().body(events);
+    public ResponseEntity<?> registerEvents(@RequestBody EventRequestWrapper eventRequestWrapper) {
+        List<TimeLine> timeLine = timelineService.collectEvents(eventRequestWrapper.getEvents());
+        return ResponseEntity.ok().body(null);
     }
 
 }
