@@ -10,6 +10,9 @@ import java.util.List;
 @Data
 public class TimelineResponseWrapper implements Serializable {
 
-    private List<TimeLine> timeLine = new ArrayList<>();
+    private List<TimeLine> timeline = new ArrayList<>();
 
+    public TimelineResponseWrapper(List<TimeLine> timeline) {
+        this.timeline = timeline;
+    }
 }

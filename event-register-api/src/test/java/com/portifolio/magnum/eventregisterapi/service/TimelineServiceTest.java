@@ -1,5 +1,7 @@
 package com.portifolio.magnum.eventregisterapi.service;
 
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventWrapper;
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWrapper;
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
 import com.portifolio.magnum.eventregisterapi.repository.TimelineRepository;
@@ -27,26 +29,26 @@ public class TimelineServiceTest {
     @Test
     public void deveSalvarOsEventosNoBancoEListarDadosOrdenados() {
 
-        List<Event> events = new ArrayList<>();
+        List<EventWrapper> events = new ArrayList<>();
 
-        Event event = eventoComprouProdutoCamisaAzul();
+        EventWrapper event = eventoComprouProdutoCamisaAzul();
         events.add(event);
 
-        Event event2 = eventoComprouPatioSavassi();
+        EventWrapper event2 = eventoComprouPatioSavassi();
         events.add(event2);
 
-        Event event3 = eventoComprouProdutoCalcaRosa();
+        EventWrapper event3 = eventoComprouProdutoCalcaRosa();
         events.add(event3);
 
-        Event event4 = eventoComprouProdutoTenisPreto();
+        EventWrapper event4 = eventoComprouProdutoTenisPreto();
         events.add(event4);
 
-        Event event5 = eventoComproBHShopping();
+        EventWrapper event5 = eventoComproBHShopping();
         events.add(event5);
 
-        //List<TimeLine> timeLine = timelineService.collectEvents(events);
+        TimelineResponseWrapper timeline = timelineService.collectEvents(events);
 
-        //Assert.assertArrayEquals();
+        Assert.assertEquals(2, timeline.getTimeline().size());
 
     }
 

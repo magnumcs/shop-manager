@@ -1,11 +1,13 @@
 package com.portifolio.magnum.eventregisterapi.service.Imp;
 
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventWrapper;
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWrapper;
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.Product;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
 import com.portifolio.magnum.eventregisterapi.repository.TimelineRepository;
 import com.portifolio.magnum.eventregisterapi.service.TimelineService;
+import javafx.animation.Timeline;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,7 +33,7 @@ public class TimelineServiceImp implements TimelineService {
     }
 
     @Override
-    public List<TimeLine> collectEvents(List<EventWrapper> eventsRequest) {
+    public TimelineResponseWrapper collectEvents(List<EventWrapper> eventsRequest) {
         List<Event> events = new ArrayList<>();
 
         eventsRequest.forEach(e -> events.add(buildEventRequest(e)));
@@ -39,11 +41,11 @@ public class TimelineServiceImp implements TimelineService {
         Map<String,List<Event>> eventsByTransaction =  events.stream()
                 .collect(Collectors.groupingBy(e -> e.getCustomData().get(TRANSACTION_ID)));
 
-        List<TimeLine> timeLine = buildTimelineDetails(eventsByTransaction);
+        List<TimeLine> timeline = buildTimelineDetails(eventsByTransaction);
 
-        timeLine.forEach(timelineRepository::save);
+        timeline.forEach(timelineRepository::save);
 
-        return timeLine;
+        return new TimelineResponseWrapper(timeline);
     }
 
     private Event buildEventRequest(EventWrapper eventWrapper) {
