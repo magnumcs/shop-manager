@@ -5,11 +5,8 @@ import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWra
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.Product;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
-import com.portifolio.magnum.eventregisterapi.repository.TimelineRepository;
 import com.portifolio.magnum.eventregisterapi.service.TimelineService;
-import javafx.animation.Timeline;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
+@Service
 public class TimelineServiceImp implements TimelineService {
 
     private static String PRODUCT_NAME = "product_name";
@@ -25,15 +22,8 @@ public class TimelineServiceImp implements TimelineService {
     private static String TRANSACTION_ID = "transaction_id";
     private static String STORE_NAME = "store_name";
 
-    private final TimelineRepository timelineRepository;
-
-    @Autowired
-    public TimelineServiceImp(TimelineRepository timelineRepository) {
-        this.timelineRepository = timelineRepository;
-    }
-
     @Override
-    public TimelineResponseWrapper collectEvents(List<EventWrapper> eventsRequest) {
+    public TimelineResponseWrapper manipulateEvents(List<EventWrapper> eventsRequest) {
         List<Event> events = new ArrayList<>();
 
         eventsRequest.forEach(e -> events.add(buildEventRequest(e)));
@@ -42,8 +32,6 @@ public class TimelineServiceImp implements TimelineService {
                 .collect(Collectors.groupingBy(e -> e.getCustomData().get(TRANSACTION_ID)));
 
         List<TimeLine> timeline = buildTimelineDetails(eventsByTransaction);
-
-        timeline.forEach(timelineRepository::save);
 
         return new TimelineResponseWrapper(timeline);
     }

@@ -1,5 +1,6 @@
 package com.portifolio.magnum.eventregisterapi.controller;
 
+import com.portifolio.magnum.eventregisterapi.client.EventsClient;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventRequestWrapper;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWrapper;
 import com.portifolio.magnum.eventregisterapi.service.TimelineService;
@@ -16,15 +17,21 @@ public class TimelineController {
 
     private final TimelineService timelineService;
 
+    private final EventsClient eventsClient;
+
     @Autowired
-    public TimelineController(TimelineService timelineService) {
+    public TimelineController(TimelineService timelineService, EventsClient eventsClient) {
         this.timelineService = timelineService;
+        this.eventsClient = eventsClient;
     }
 
-    @PostMapping(value = "/register")
+    @PostMapping
     public ResponseEntity<?> registerEvents(@RequestBody EventRequestWrapper eventRequestWrapper) {
-        TimelineResponseWrapper timeline = timelineService.collectEvents(eventRequestWrapper.getEvents());
-        return ResponseEntity.ok().body(timeline);
+        return eventsClient.get();
+//        TimelineResponseWrapper timeline = timelineService.collectEvents(eventRequestWrapper.getEvents());
+//        return ResponseEntity.ok().body(timeline);
     }
+
+
 
 }

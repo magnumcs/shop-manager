@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-@Document(collection = "event")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

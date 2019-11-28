@@ -3,12 +3,14 @@ package com.portifolio.magnum.eventregisterapi.domain.wrapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.portifolio.magnum.eventregisterapi.domain.TypeEventEnum;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 
 @Data
+@Document(collection = "event")
 public class EventWrapper implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)

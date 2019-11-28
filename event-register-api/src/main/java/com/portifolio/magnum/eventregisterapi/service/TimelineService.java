@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface TimelineService {
 
-    TimelineResponseWrapper collectEvents(List<EventWrapper> eventsRequest);
+    TimelineResponseWrapper manipulateEvents(List<EventWrapper> eventsRequest);
 
 }
