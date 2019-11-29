@@ -1,5 +1,7 @@
 package com.portifolio.magnum.eventregisterapi.service;
 
+import com.portifolio.magnum.eventregisterapi.client.EventsClient;
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventRequestWrapper;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventWrapper;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWrapper;
 import com.portifolio.magnum.eventregisterapi.repository.TimelineRepository;
@@ -9,7 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
@@ -20,6 +25,9 @@ public class TimelineServiceTest {
 
     @InjectMocks
     private TimelineServiceImp timelineService;
+
+    @Mock
+    private EventsClient eventsClient;
 
     @Mock
     private TimelineRepository timelineRepository;
@@ -44,7 +52,12 @@ public class TimelineServiceTest {
         EventWrapper event5 = eventoComproBHShopping();
         events.add(event5);
 
-        TimelineResponseWrapper timeline = timelineService.manipulateEvents(events);
+        EventRequestWrapper eventRequest = new EventRequestWrapper();
+        eventRequest.setEvents(events);
+
+        Mockito.when(eventsClient.get()).thenReturn(new ResponseEntity<>(eventRequest, HttpStatus.OK));
+
+        TimelineResponseWrapper timeline = timelineService.manipulateEvents();
 
         Assert.assertEquals(2, timeline.getTimeline().size());
 
