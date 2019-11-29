@@ -1,17 +1,20 @@
 package com.portifolio.magnum.eventregisterapi.service.Imp;
 
+import com.portifolio.magnum.eventregisterapi.client.EventsClient;
+import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventRequestWrapper;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.EventWrapper;
 import com.portifolio.magnum.eventregisterapi.domain.wrapper.TimelineResponseWrapper;
+import com.portifolio.magnum.eventregisterapi.exception.BadGatewayException;
 import com.portifolio.magnum.eventregisterapi.model.Event;
 import com.portifolio.magnum.eventregisterapi.model.Product;
 import com.portifolio.magnum.eventregisterapi.model.TimeLine;
 import com.portifolio.magnum.eventregisterapi.service.TimelineService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,11 +25,30 @@ public class TimelineServiceImp implements TimelineService {
     private static String TRANSACTION_ID = "transaction_id";
     private static String STORE_NAME = "store_name";
 
+    private final EventsClient eventsClient;
+
+    @Autowired
+    public TimelineServiceImp(EventsClient eventsClient) {
+        this.eventsClient = eventsClient;
+    }
+
+
+    private EventRequestWrapper getEvents() {
+        ResponseEntity<EventRequestWrapper> eventRequest = eventsClient.get();
+        if(HttpStatus.OK.equals(eventRequest.getStatusCode()) &&
+                !Objects.requireNonNull(eventRequest.getBody()).getEvents().isEmpty()) {
+            return eventRequest.getBody();
+        }
+        throw new BadGatewayException("Erro ao tentar realizar operação!");
+    }
+
     @Override
-    public TimelineResponseWrapper manipulateEvents(List<EventWrapper> eventsRequest) {
+    public TimelineResponseWrapper manipulateEvents() {
+        EventRequestWrapper eventRequest = getEvents();
+
         List<Event> events = new ArrayList<>();
 
-        eventsRequest.forEach(e -> events.add(buildEventRequest(e)));
+        eventRequest.getEvents().forEach(e -> events.add(buildEventRequest(e)));
 
         Map<String,List<Event>> eventsByTransaction =  events.stream()
                 .collect(Collectors.groupingBy(e -> e.getCustomData().get(TRANSACTION_ID)));
