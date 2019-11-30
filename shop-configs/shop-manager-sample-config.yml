@@ -1,0 +1,3 @@
+shop-manager:
+  maxOrders: 10
+  minOrders: 1
