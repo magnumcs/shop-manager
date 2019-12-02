@@ -1,0 +1,61 @@
+version: '3.5'
+services:
+    mongodb:
+      image: mongo
+      expose:
+        - 27017
+      ports:
+        - 27017:27017
+      environment:
+        MONGODB_APPLICATION_DATABASE: shopmanagerdb
+      networks:
+        - app-net
+    event-register-api:
+      image: event-register-api
+      depends_on:
+        - mongodb
+      ports:
+        - 9050:9050
+      networks:
+        - app-net
+      build:
+        context: ./event-register-api/
+        dockerfile: Dockerfile
+      restart: unless-stopped
+    shop-gateway-server:
+      image: shop-gateway-server
+      depends_on:
+        - shop-eureka-server
+      ports:
+        - 8080:8080
+      networks:
+        - app-net
+      build:
+        context: ./shop-gateway-server/
+        dockerfile: Dockerfile
+      restart: unless-stopped
+    shop-eureka-server:
+      image: shop-eureka-server
+      depends_on:
+        - shop-config-server
+      ports:
+        - 9091:9091
+      networks:
+        - app-net
+      build:
+        context: ./shop-eureka-server/
+        dockerfile: Dockerfile
+      restart: unless-stopped     
+    shop-config-server:
+      image: shop-config-server
+      ports:
+        - 9090:9090
+      networks:
+        - app-net
+      build:
+        context: ./shop-config-server/
+        dockerfile: Dockerfile
+      restart: unless-stopped
+networks:
+  app-net:
+    driver: bridge

@@ -1,5 +1,5 @@
 server:
-  port: 9050
+  port: 8080
 
 eureka:
   instance:
@@ -7,35 +7,34 @@ eureka:
     port: 9091
   client:
     registerWithEureka: true
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
   server:
     wait-time-in-ms-when-sync-empty: 3000
 
-spring:
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: shopmanagerdb
+zuul:
+  ignored-services: '*'
+  prefix: /api
+  routes:
+    register-service:
+      path: /event-register/**
+      serviceId: event-register-api
+  host:
+    socket-timeout-millis: 30000
+
 
 ---
 
 spring:
   profiles: docker
-  data:
-    mongodb:
-      host: mongodb
-      port: 27017
-      database: shopmanagerdb
 
 eureka:
   instance:
-    hostname: event-register-api
+    hostname: shop-gateway-server
   client:
     registerWithEureka: true
-    fetchRegistry: false
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://shop-eureka-server:9091/eureka/
   server:

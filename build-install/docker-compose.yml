@@ -1,0 +1,8 @@
+version: '3.4'
+services:
+    app:
+      image: magnumfaria/build_shop_manager:latest
+      volumes:
+        - ../:/opt/build
+        - $HOME/.m2:/root/
+      command: sh /opt/build/build-install/build.sh

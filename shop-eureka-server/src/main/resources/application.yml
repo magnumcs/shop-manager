@@ -11,3 +11,20 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
   server:
     wait-time-in-ms-when-sync-empty: 3000
+
+
+---
+
+spring:
+  profiles: docker
+
+eureka:
+  instance:
+    hostname: shop-eureka-server
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://shop-eureka-server:9091/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 3000
