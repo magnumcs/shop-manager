@@ -29,6 +29,7 @@ Clonar o projeto localmente e rodar o sequinte comando:
 
 Após todos os procedimentos serem executados com sucesso, acessar as seguintes urls:
 
+### `http://0.0.0.0:9091/`
 ### `http://0.0.0.0:8080/api/event-register/timeline`
 ### `http://0.0.0.0:8080/api/event-register/events/collect`
 ### `http://0.0.0.0:8080/api/event-register/events/autocomplete/{input}`
